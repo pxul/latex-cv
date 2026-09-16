@@ -1,0 +1,235 @@
+% resume.sty
+
+% Copyright (c) 2012 Cies Breijs
+% Modifications copyright (c) 2026 Paul Jefferson
+%
+% The MIT License
+%
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+% copies of the Software, and to permit persons to whom the Software is
+% furnished to do so, subject to the following conditions:
+%
+% The above copyright notice and this permission notice shall be included in
+% all copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+% FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+% AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+% LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+% OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+% SOFTWARE.
+%
+% This style provides commands for making a LaTeX resume. Originally from
+% https://github.com/cies/resume; this copy has been modified. Modifications:
+% an engine-aware font selector (\cvfont), Tabler contact-line icons, and a
+% number of spacing and right-alignment fixes.
+
+%%% LOAD AND SETUP PACKAGES
+
+% To finetune lists with a inline heading and indented content.
+% See the Experiences section in the example.
+\usepackage{mdwlist}
+
+% For multiple column text.
+\usepackage{multicol}
+
+% For \textscale, which I prefer over \sc (small caps).
+% See the \acr command definition below.
+\usepackage{relsize}
+
+% Setup the hyperrefs with the right color.
+\usepackage{hyperref}
+\usepackage{xcolor}
+% Single knob for link and contact-icon colour. Set to black; change here to recolour both.
+\definecolor{cv-link}{rgb}{0,0,0}
+\hypersetup{colorlinks,linkcolor={cv-link},citecolor={cv-link},urlcolor={cv-link}}
+
+% Underline link text. Links are black, so the rule is what marks them as links --
+% needed in print, where colour alone would not survive a monochrome printer.
+% normalem stops ulem from redefining \emph; ULdepth drops the rule clear of
+% descenders (the j and p in phj@fastmail.com would otherwise sit on it).
+\usepackage[normalem]{ulem}
+\setlength{\ULdepth}{1.8pt}
+\NewCommandCopy{\cv@plainhref}{\href}
+\renewcommand{\href}[3][]{\cv@plainhref[#1]{#2}{\uline{#3}}}
+
+% Font setup. Pick the document font by setting \cvfont below to one of:
+%   pagella      -- TeX Gyre Pagella (Palatino-like), the package default
+%   latinmodern  -- Latin Modern Roman (Computer-Modern-like)
+%   schola       -- TeX Gyre Schola (Century Schoolbook-like)
+%   bonum        -- TeX Gyre Bonum (Bookman-like)
+%   termes       -- TeX Gyre Termes (Times-like)
+% Each choice maps to an OpenType family (loaded via fontspec on XeTeX/LuaTeX)
+% and a pdfTeX package. Add a font by giving it a matching \cv@font@<name>. The
+% engine guard keys on iftex (not XeTeX alone) so LuaLaTeX gets the chosen font
+% rather than a silent Latin Modern fallback.
+\def\cvfont{schola}
+
+\@namedef{cv@font@pagella}{\def\cv@family{TeX Gyre Pagella}\def\cv@pkg{tgpagella}}
+\@namedef{cv@font@latinmodern}{\def\cv@family{Latin Modern Roman}\def\cv@pkg{lmodern}}
+\@namedef{cv@font@schola}{\def\cv@family{TeX Gyre Schola}\def\cv@pkg{tgschola}}
+\@namedef{cv@font@bonum}{\def\cv@family{TeX Gyre Bonum}\def\cv@pkg{tgbonum}}
+\@namedef{cv@font@termes}{\def\cv@family{TeX Gyre Termes}\def\cv@pkg{tgtermes}}
+\csname cv@font@\cvfont\endcsname
+
+\usepackage{iftex}
+\ifpdftex
+
+  % pdfTeX back-end: load the font's LaTeX package. We therefore lack old-style
+  % numbers, some ligatures and a few niceties; microtype still helps.
+  \expandafter\usepackage\expandafter{\cv@pkg}
+  \usepackage[expansion,protrusion]{microtype}
+
+\else
+
+  % XeTeX or LuaTeX: load the OpenType family with all features on. The main
+  % font uses old-style figures; \newnums is the same family with lining figures.
+  \usepackage{fontspec}
+  \setmainfont[Numbers=OldStyle,Ligatures={TeX,Common,Contextual}]{\cv@family}
+  \newfontfamily\newnums[Ligatures={TeX,Common,Contextual}]{\cv@family}
+  \usepackage[protrusion]{microtype}
+
+\fi
+
+% Contact-line icons from the bundled Tabler Icons webfont (fonts/tabler-icons.ttf,
+% v3.31.0, MIT). Loaded via fontspec, so icons need Lua/XeTeX; under pdfTeX the
+% \ti... macros expand to nothing and the contact details still list as text.
+% Codepoints are taken from that version's tabler-icons.css.
+\ifpdftex
+  \newcommand{\tiLocation}{}\newcommand{\tiPhone}{}%
+  \newcommand{\tiMail}{}\newcommand{\tiLinkedin}{}%
+\else
+  \newfontface\tablericons[Path=fonts/]{tabler-icons.ttf}
+  \newcommand{\tiLocation}{{\tablericons\symbol{"10125}}}% current-location-filled
+  \newcommand{\tiPhone}{{\tablericons\symbol{"EB09}}}%    phone
+  \newcommand{\tiMail}{{\tablericons\symbol{"EAE5}}}%     mail
+  \newcommand{\tiLinkedin}{{\tablericons\symbol{"EC8C}}}% brand-linkedin
+\fi
+
+%%% DOCUMENT WIDE STYLING
+
+\pagestyle{empty}
+
+% Let a page end short of the bottom margin rather than having its contents
+% spread to fill the height, and silence the underfull-box warnings that come
+% with it. Pages here break where \cvsectionpenalty steers them, not where the
+% text happens to fill the column, so most pages end short by design.
+\raggedbottom
+\setlength{\tabcolsep}{0em}
+\xspaceskip7pt  % some more spacing between sentences (use "i.e.\ " or "with SQL\@. " in case of errors)
+
+%%% CUSTOM COMMANDS
+
+% main title (name) with subtitle (date)
+\newcommand\maintitle[3]{\vbox to 0pt{\hfill\scriptsize\color{gray} #3\vss}\vspace{-0.4em}\noindent{\LARGE \textbf{#1}}\ \ \ \emph{#2}}
+
+% title for the root sections (experience, education, etc) of the resume
+\newcommand*\roottitle[1]{\subsection*{#1}\vspace{-0.3em}\nopagebreak[4]}
+
+% acr command, to quickly mark acronyms for special formatting
+\newcommand*\acr[1]{\textscale{.85}{#1}}
+
+% cvicon: a contact-line icon, coloured to match the links, nudged down slightly
+% (the icon glyphs sit a touch high) with a small gap before the text that
+% follows. Tune the raise with \cviconraise; recolour via cv-link above.
+\newcommand{\cviconraise}{-0.2ex}
+\newcommand{\cvicon}[1]{\textcolor{cv-link}{\raisebox{\cviconraise}{#1}}\hspace{0.35em}}
+
+% pretty bullet (a magnified centred dot), \sbull contains its spacing.
+% relsize clamps its magnification at its top magstep (24.88pt at this 11pt base),
+% so \textscale{4} always rendered at 24.88pt and warned; 2.27 asks for that size
+% directly -- same bullet, no warning. The dot is \textperiodcentered (text mode,
+% document font) rather than a math \cdot, so it uses Schola and avoids Computer
+% Modern math-font size substitutions on the contact line.
+\newcommand*\bull{\raisebox{-0.365em}[-1em][-1em]{\textscale{2.27}{\textperiodcentered}}}
+\newcommand*\sbull{\ \ \bull \ \ }
+
+% it seems not to work when simply using \parindent...
+\newlength{\newparindent}
+\addtolength{\newparindent}{\parindent}
+
+% a double \parindent...
+\newlength{\doubleparindent}
+\addtolength{\doubleparindent}{\parindent}
+\addtolength{\doubleparindent}{\parindent}
+
+% indentsection style, used for sections that aren't already in lists
+% that need indentation to the level of all text in the document
+% \partopsep is zeroed along with the other list glue so that consecutive
+% \headedsubsection blocks (each its own list) sit a single \baselineskip apart,
+% matching the employer-to-position and position-to-description gaps. Left at its
+% default, it injects ~3pt at each list boundary, and those accumulate down a
+% run of positions, making the inter-position gaps visibly looser than the rest.
+% Two penalties are raised to infinity here, which is what keeps a page break
+% out of the middle of an entry. \interlinepenalty forbids a break between the
+% lines of a paragraph, so a description cannot be split across pages; without
+% it those breaks are the ones the page builder reaches for, because they are
+% the last ones available before the page overflows. \@beginparpenalty forbids
+% the -51 break LaTeX offers at the start of every list, which sits directly
+% after an employer or position heading and can strand the heading at the foot
+% of a page. Between them, an entry has no legal break inside it, so the page
+% has to break between entries. Breaks between \item entries of a nested
+% itemize stay legal, as the escape valve for a block too tall for one page.
+\newenvironment{indentsection}%
+{\begin{list}{}%
+  {\setlength{\leftmargin}{\newparindent}\setlength{\parsep}{0pt}\setlength{\parskip}{0pt}\setlength{\itemsep}{0pt}\setlength{\topsep}{0pt}\setlength{\partopsep}{0pt}\@beginparpenalty\@M\interlinepenalty\@M}%
+}
+{\end{list}}
+
+% Extra vertical space between one employer block and the next. Added as trailing
+% \addvspace so it only ever falls between consecutive \headedsection blocks: it
+% is absorbed by the larger \roottitle space after the last employer, and nothing
+% precedes the first. Adjust to taste.
+\newlength{\cvcompanysep}\setlength{\cvcompanysep}{6pt}
+
+% Preferred page-break point: the penalty each \headedsection leaves behind it.
+% Negative attracts the page builder, so of the breaks available it favours the
+% one between two employer blocks over the -51 of a list boundary or the -151
+% \bodytext leaves. Note that this only ranks the breaks that are legal -- it
+% cannot stop a break the page builder is still allowed to take, which is the
+% job of the infinite penalties in indentsection above. Make it more negative
+% to strengthen the preference, nearer zero to weaken it.
+\newcount\cvsectionpenalty \cvsectionpenalty=-500
+
+% headerrow command, used for a new employer.
+% \ignorespaces drops any whitespace at the start of the body (#3): without it,
+% a source newline before a nested \bodytext list leaves a stray inter-word space
+% on the \hfill line, nudging the right-hand item ~1 space-width off the margin.
+% The trailing \addpenalty is the preferred page break (see \cvsectionpenalty).
+% \addpenalty puts it before the block's trailing glue rather than after, so a
+% break there discards the inter-employer space instead of printing it at the
+% top of the new page.
+\newcommand{\headedsection}[3]{\begin{indentsection}\item[]\textscale{1.1}{#1}\hfill#2\ignorespaces#3\end{indentsection}\addpenalty{\cvsectionpenalty}\addvspace{\cvcompanysep}}
+
+% subheaderrow command, used for a new position.
+% See \headedsection: \ignorespaces keeps the right-aligned date flush to the
+% margin regardless of how the body (#3) is laid out in the source.
+\newcommand{\headedsubsection}[3]{\nopagebreak[4]\begin{indentsection}\item[]\textbf{#1}\hfill\emph{#2}\ignorespaces#3\end{indentsection}\nopagebreak[4]}
+
+% body text (indented)
+\newcommand{\bodytext}[1]{\nopagebreak[4]\begin{indentsection}\item[]#1\end{indentsection}\pagebreak[2]}
+
+% \vspace variaties
+\newcommand{\breakvspace}[1]{\pagebreak[2]\vspace{#1}\pagebreak[2]}
+\newcommand{\nobreakvspace}[1]{\nopagebreak[4]\vspace{#1}\nopagebreak[4]}
+
+% \spacedhrule a horizontal line with some vertical space before and after it
+\newcommand{\spacedhrule}[2]{\breakvspace{#1}\hrule\nobreakvspace{#2}}
+
+% \inlineheadsection command, used for a new employer
+\newcommand{\inlineheadsection}[2]{\begin{basedescript}{\setlength{\leftmargin}{\doubleparindent}}\item[\hspace{\newparindent}\textbf{#1}]#2\end{basedescript}\vspace{-1.7em}}
+
+% apo command, for an apostrophe that looks good on old style nums
+\newcommand{\apo}{\raisebox{-.18ex}{'}{\hspace{-.1em}}}
+
+% non space that allows line breaks
+\newcommand*{\nsp}{\hskip0pt}
+
+%%% MORE SPECIFIC COMMANDS
+
+% CPP command (found it in some corner of the internet and decided to use it)
+\newcommand{\CPP}{C\nolinebreak[4]\hspace{-.04em}\raisebox{.20ex}{\footnotesize\bf++}}

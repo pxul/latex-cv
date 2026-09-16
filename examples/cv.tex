@@ -1,0 +1,93 @@
+% Example CV. Build from the repository root so that resume.sty and fonts/
+% are found:
+%
+%   latexmk examples/cv.tex
+%
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper,margin=0.75in]{geometry}
+
+\usepackage[english]{babel}
+
+\usepackage{resume}
+
+\begin{document}
+\sloppy
+
+\maintitle{Data}{Lieutenant Commander, Starfleet}{Stardate 47988}
+\nobreakvspace{0.5em}
+
+\noindent \cvicon{\tiLocation}USS Enterprise (NCC-1701-D) \sbull \cvicon{\tiPhone}Combadge, Operations\\
+\cvicon{\tiMail}\href{mailto:data@enterprise.starfleet}{{\tt data@enterprise.starfleet}} \sbull \cvicon{\tiLinkedin}\href{https://subspace.example/in/data}{{\tt subspace.example/in/data}}
+
+%
+% Personal Profile
+%
+\roottitle{Personal Profile}
+
+\bodytext{Android and Starfleet officer with twenty-five years' service, currently second officer and chief operations officer of the Federation flagship. Brings precise analysis, rapid computation, and complete recall to any bridge, away team, or poker table. Is not seeking to leave the Enterprise, but has been advised that keeping a current CV is a human practice, and wishes to observe it.}
+
+%
+% Career Development
+%
+\roottitle{Career Development}
+
+\headedsection{USS Enterprise (NCC-1701-D) (\textit{6 years})}{Galaxy-class starship}{
+  \headedsubsection{Second Officer and Chief Operations Officer}{2364 -- present}{
+    \bodytext{Third in the chain of command, under Captain Jean-Luc Picard. Responsible for the allocation of the ship's resources and the coordination of requests between departments, from the operations console on the bridge.
+    \begin{itemize}
+      \item \textbf{Rights:} Was the subject of a hearing before the Judge Advocate General in 2365, to determine whether I am the property of Starfleet and may be disassembled for study. The ruling, that I have the right to choose, was made over the arguments of the ship's first officer, who had been ordered to argue against me and did so well. We remain friends.
+      \item \textbf{Discretion:} Have on one occasion been ordered by my captain to conceal the events of an entire day from the crew, including from the captain himself. I complied, under questioning from all of them.
+      \item \textbf{Resilience:} Was held for a period as an exhibit in the private collection of the trader Kivas Fajo, who had staged my death in a shuttle explosion. I declined to sit in the chair provided. On my recovery, the transporter chief reported that my weapon had been in a state of discharge as I was beamed out. Perhaps something occurred during transport.
+    \end{itemize}}
+  }
+}
+
+\headedsection{USS Sutherland (\textit{temporary command})}{Klingon--Romulan border}{
+  \headedsubsection{Commanding Officer}{2368}{
+    \bodytext{Commanded a Nebula-class starship in the blockade that prevented Romulan supplies from reaching the Duras family during the Klingon civil war. Disobeyed a direct order to rejoin the fleet, in order to expose a cloaked Romulan convoy. Captain Picard observed afterwards that the claim to have been following orders has been used to justify too many tragedies; I have taken this as approval. My first officer expressed reservations about serving under an android. I do not believe they were resolved, but the convoy was.}
+  }
+}
+
+\headedsection{Starfleet (\textit{19 years})}{Various}{
+  \headedsubsection{Junior Officer, postings including the USS Trieste}{2345 -- 2364}{
+    \bodytext{Commissioned as an ensign on graduation and promoted through the ranks to lieutenant commander. My service record for this period is complete to the millisecond and is available on request. I have been advised not to include it here.}
+  }
+}
+
+%
+% Skills
+%
+\roottitle{Skills}
+
+\headedsection{Computation \& Analysis}{}{
+  \bodytext{Storage capacity of 800 quadrillion bits, and a total linear computational speed of 60 trillion operations per second. Complete recall. Probability estimates to as many decimal places as the situation allows, and to fewer when asked.}
+}
+
+\headedsection{Communication}{}{
+  \bodytext{Full command of Federation Standard, with the exception of contractions, which I do not use. Humour is under active development: I studied with a holographic comedian in 2365, and the results to date are mixed.}
+}
+
+\headedsection{The Arts}{}{
+  \bodytext{The violin, played with technical precision; whether I also play with feeling is a matter of continuing discussion. Painting. Poetry, including an ode to my cat, which has been read aloud to an audience.}
+}
+
+%
+% Education
+%
+\roottitle{Education}
+
+\headedsection{Starfleet Academy}{2341 -- 2345}{
+  \bodytext{Honours in exobiology and probability mechanics. The first android to attend. Whether I had chosen to do so, or had merely been enrolled, was decided in my favour some years later.}
+}
+
+\headedsection{Omicron Theta colony}{Activated 2338}{
+  \bodytext{Constructed by Dr Noonien Soong, and activated by the crew of the USS Tripoli after the colony's destruction. My brother Lore was constructed first. Any reference he provides should be disregarded.}
+}
+
+%
+% Interests
+%
+\roottitle{Interests}
+\bodytext{Sherlock Holmes on the holodeck, though since a colleague asked the computer for an adversary capable of defeating me, I specify my own opponents. Poker with the senior officers. Dance, under instruction from Dr Crusher. My cat, Spot.}
+
+\end{document}

@@ -1,0 +1,45 @@
+% Example cover letter, using the same font and contact-line macros as the CV.
+% Build from the repository root:
+%
+%   latexmk examples/cover-letter.tex
+%
+\documentclass[paper=a4, fontsize=10pt]{scrlttr2}
+\usepackage[T1]{fontenc}
+\usepackage[top=1.25in,bottom=1.25in,left=1.5in,right=1.5in]{geometry}
+\usepackage{resume} % same font and contact-line macros as the CV
+\usepackage{ragged2e} % \RaggedRight gives an unjustified but hyphenated body
+
+\setkomavar{fromname}{Lieutenant Commander Data}
+\setkomavar{fromaddress}{%
+  \cvicon{\tiLocation}USS Enterprise (NCC-1701-D) \sbull \cvicon{\tiPhone}Combadge, Operations\\
+  \cvicon{\tiMail}\href{mailto:data@enterprise.starfleet}{\texttt{data@enterprise.starfleet}} \sbull \cvicon{\tiLinkedin}\href{https://subspace.example/in/data}{\texttt{subspace.example/in/data}}%
+}
+\setkomavar{signature}{Lieutenant Commander Data}
+
+\setkomavar{date}{Stardate 47988}
+\setkomavar{subject}{Research Fellowship in Cybernetics}
+\KOMAoptions{fromalign=right, fromrule=aftername, backaddress=false, addrfield=false, foldmarks=false, parskip=full, subject=titled, pagenumber=false, enlargefirstpage=true}
+
+% KOMA's letterhead and text block use pseudo-lengths rather than geometry.
+\setplength{firstheadvpos}{0.75in}
+\setplength{refvpos}{2.75in}
+\setplength{refaftervskip}{1.5\baselineskip}
+\setplength{firstfootvpos}{\dimexpr\paperheight-0.5in\relax}
+
+\begin{document}
+\begin{letter}{}
+
+\opening{Dear Fellowship Committee,}
+\RaggedRight
+
+I am writing to apply for the Research Fellowship in Cybernetics at the Daystrom Institute. I am aware that the Institute's cybernetics division has previously sought to acquire me. I am writing to propose that it employ me instead, which I understand is the more usual arrangement.
+
+I believe I can offer the division a perspective that is not available elsewhere. Commander Bruce Maddox and I have corresponded regularly since the hearing of 2365, and I have kept him informed of my activities in some detail; I believe he would describe the correspondence as thorough. I also have practical experience in the field. In 2366 I constructed a positronic android, my daughter Lal, who in several respects exceeded my own abilities before a cascade failure in her neural net ended her life. I would welcome the chance to understand what went wrong.
+
+I would not wish to leave the Enterprise at once, and Captain Picard has asked me to note that he would not wish it either. I would ask only that any study of my own design be conducted without disassembly.
+
+I should be pleased to discuss the fellowship further, at any stardate convenient to the committee.
+
+\closing{Yours faithfully,}
+\end{letter}
+\end{document}
