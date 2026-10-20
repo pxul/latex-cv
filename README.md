@@ -2,7 +2,7 @@
 
 A LaTeX style for a plain, single-column CV, with a matching cover letter. It is a modified copy of [Cies Breijs's `resume.sty`](https://github.com/cies/resume): the modifications are an engine-aware font selector, contact-line icons from Tabler Icons, and a set of spacing and page-break fixes so that an entry is never split across pages.
 
-The examples are a CV and cover letter for Lieutenant Commander Data, who has been advised that keeping a current CV is a human practice.
+The examples are a CV and cover letter for Lieutenant Commander Data, who has been advised that keeping a current CV is a human practice. The rendered output is in [`examples/cv.pdf`](examples/cv.pdf) and [`examples/cover-letter.pdf`](examples/cover-letter.pdf).
 
 ## Requirements
 
