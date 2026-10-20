@@ -1,6 +1,6 @@
 # latex-cv
 
-A LaTeX style for a plain, single-column CV, with a matching cover letter. It is a modified copy of [Cies Breijs's `resume.sty`](https://github.com/cies/resume): the modifications are an engine-aware font selector, contact-line icons from Tabler Icons, and a set of spacing and page-break fixes so that an entry is never split across pages.
+A LaTeX style for a plain, single-column CV, with a matching cover letter. It is a modified copy of [Cies Breijs's `resume.sty`](https://github.com/cies/resume): the modifications are an engine-aware font selector, contact-line icons from Tabler Icons, text extraction that applicant tracking systems can read cleanly, and a set of spacing and page-break fixes so that an entry is never split across pages.
 
 The examples are a CV and cover letter for Lieutenant Commander Data, who has been advised that keeping a current CV is a human practice. The rendered output is in [`examples/cv.pdf`](examples/cv.pdf) and [`examples/cover-letter.pdf`](examples/cover-letter.pdf).
 
@@ -8,6 +8,7 @@ The examples are a CV and cover letter for Lieutenant Commander Data, who has be
 
 - A TeX distribution with the TeX Gyre fonts, `fontspec`, `microtype`, `mdwlist`, `relsize`, `ulem`, `hyperref` and `xcolor`. TeX Live's full install has all of them.
 - LuaLaTeX or XeLaTeX for the OpenType fonts and the contact-line icons. The style also builds under pdfLaTeX, using the equivalent Type 1 font package; the icon macros then expand to nothing and the contact details list as plain text.
+- Optionally `accsupp`, from the oberdiek bundle. With it, the contact icons and the date stamp are hidden from text extraction, so an applicant tracking system does not read the icons as stray characters or run the date into the name. Without it the style still builds.
 - The cover letter uses KOMA-Script's `scrlttr2` and `ragged2e`.
 
 ## Building the examples

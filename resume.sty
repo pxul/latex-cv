@@ -44,6 +44,23 @@
 % Setup the hyperrefs with the right color.
 \usepackage{hyperref}
 \usepackage{xcolor}
+
+% accsupp provides \BeginAccSupp, which tells a PDF extractor what to read in
+% place of a piece of output. It is used below to hide the decorative contact
+% icons from text extraction -- applicant tracking systems otherwise read their
+% glyphs as stray characters -- and to stop the date stamp running into the
+% name. The package is in TeX Live's oberdiek bundle but not in the basic
+% scheme, so guard it: without it the document still builds and only loses the
+% extraction fixes.
+% The doubled hashes are needed because \IfFileExists reads its branches into a
+% temporary macro before expanding them.
+\IfFileExists{accsupp.sty}{%
+  \usepackage{accsupp}%
+  % \cvnotext: rendered as given, read by a text extractor as nothing.
+  \newcommand{\cvnotext}[1]{\BeginAccSupp{ActualText={}}##1\EndAccSupp{}}%
+}{%
+  \newcommand{\cvnotext}[1]{##1}%
+}
 % Single knob for link and contact-icon colour. Set to black; change here to recolour both.
 \definecolor{cv-link}{rgb}{0,0,0}
 \hypersetup{colorlinks,linkcolor={cv-link},citecolor={cv-link},urlcolor={cv-link}}
@@ -125,7 +142,14 @@
 %%% CUSTOM COMMANDS
 
 % main title (name) with subtitle (date)
-\newcommand\maintitle[3]{\vbox to 0pt{\hfill\scriptsize\color{gray} #3\vss}\vspace{-0.4em}\noindent{\LARGE \textbf{#1}}\ \ \ \emph{#2}}
+% The date sits in a zero-height box drawn just before the name, so a text
+% extractor reads the two with nothing between them ("September 2026Paul
+% Jefferson") and a parser looking for the candidate's name finds that. The
+% stamp is for a human reading the page, so it is hidden from extraction and
+% the name starts the extracted text.
+\newcommand\maintitle[3]{\vbox to 0pt{\hfill\scriptsize\color{gray}
+  \cvnotext{#3}\vss}%
+  \vspace{-0.4em}\noindent{\LARGE \textbf{#1}}\ \ \ \emph{#2}}
 
 % title for the root sections (experience, education, etc) of the resume
 \newcommand*\roottitle[1]{\subsection*{#1}\vspace{-0.3em}\nopagebreak[4]}
@@ -137,7 +161,11 @@
 % (the icon glyphs sit a touch high) with a small gap before the text that
 % follows. Tune the raise with \cviconraise; recolour via cv-link above.
 \newcommand{\cviconraise}{-0.2ex}
-\newcommand{\cvicon}[1]{\textcolor{cv-link}{\raisebox{\cviconraise}{#1}}\hspace{0.35em}}
+% The icons are decoration, so ActualText gives extractors nothing in their
+% place; without it the glyphs come out as stray characters beside the contact
+% details.
+\newcommand{\cvicon}[1]{\textcolor{cv-link}{\raisebox{\cviconraise}{%
+  \cvnotext{#1}}}\hspace{0.35em}}
 
 % pretty bullet (a magnified centred dot), \sbull contains its spacing.
 % relsize clamps its magnification at its top magstep (24.88pt at this 11pt base),
